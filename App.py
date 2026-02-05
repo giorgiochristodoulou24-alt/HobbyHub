@@ -7,8 +7,8 @@ st.set_page_config(
     layout="centered"
 )
 
-st.title("🎯 HobbyHub Chatbot")
-st.write("Talk to me about hobbies, interests, and things you enjoy!")
+st.title("HobbyHub Chatbot")
+st.write("Ask me anything about hobbies and interests.")
 
 # Initialize chat history
 if "messages" not in st.session_state:
