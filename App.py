@@ -8,7 +8,7 @@ st.set_page_config(
 )
 
 st.title("HobbyHub Chatbot")
-st.write("Ask me anything about hobbies and interests and I will somehow survive the thrill")
+st.write("Ask me anything about hobbies and interests and I will somehow survive the thrill.")
 
 # Initialize chat history
 if "messages" not in st.session_state:
