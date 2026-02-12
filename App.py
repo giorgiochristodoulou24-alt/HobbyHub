@@ -1,3 +1,8 @@
+import os
+import streamlit as st
+
+st.write("OPENAI_API_KEY exists:", os.getenv("OPENAI_API_KEY") is not None)
+
 import streamlit as st
 from openai import OpenAI
 
