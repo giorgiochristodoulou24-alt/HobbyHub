@@ -1,5 +1,6 @@
 import streamlit as st
 import random
+import re
 
 # -----------------------------
 # LOAD PERSONALITY & PROMPTS
@@ -15,52 +16,65 @@ PROMPTS = load_text("prompts.txt")
 SYSTEM_CONTEXT = f"{PERSONALITY}\n\n{PROMPTS}"
 
 # -----------------------------
-# MOCK LLM (NO DUMPING PROMPTS)
+# MEMORY
+# -----------------------------
+
+if "memory" not in st.session_state:
+    st.session_state.memory = {
+        "hobbies": set(),
+        "used_responses": set()
+    }
+
+# -----------------------------
+# MOCK LLM WITH CONTEXT & MEMORY
 # -----------------------------
 
 def mock_llm(user_input, history):
-    # Light conversational behavior
-    follow_ups = [
-        "Tell me more about that.",
-        "What got you interested in it?",
-        "How much experience do you have with it?",
-        "That sounds fun — what part interests you most?",
-        "Is this something you want to do casually or seriously?"
+    text = user_input.lower()
+
+    # Detect hobby mentions
+    hobby_keywords = [
+        "gaming", "drawing", "music", "guitar", "piano",
+        "sports", "soccer", "basketball", "coding",
+        "art", "painting", "photography", "writing"
     ]
 
-    # Simple topic awareness
-    if "hello" in user_input.lower():
-        return "Hey! What hobby are you thinking about?"
+    for hobby in hobby_keywords:
+        if hobby in text:
+            st.session_state.memory["hobbies"].add(hobby)
 
-    if "i like" in user_input.lower() or "i enjoy" in user_input.lower():
-        return random.choice(follow_ups)
+    # Personality-influenced tone
+    tone_responses = [
+        "That sounds like a great interest.",
+        "That’s a solid hobby choice.",
+        "A lot of people find that really rewarding."
+    ]
 
-    return random.choice(follow_ups)
+    follow_ups = [
+        "What do you enjoy most about it?",
+        "How did you get started?",
+        "Do you want to get better at it or just have fun?",
+        "Do you usually do it alone or with others?",
+        "What part of it do you find most challenging?"
+    ]
 
-# -----------------------------
-# STREAMLIT UI
-# -----------------------------
+    # Avoid repeating responses
+    available = [
+        r for r in follow_ups
+        if r not in st.session_state.memory["used_responses"]
+    ]
 
-st.set_page_config(page_title="HobbyHub")
-st.title("HobbyHub")
+    if not available:
+        st.session_state.memory["used_responses"].clear()
+        available = follow_ups
 
-if "messages" not in st.session_state:
-    st.session_state.messages = []
+    response = random.choice(available)
+    st.session_state.memory["used_responses"].add(response)
 
-for msg in st.session_state.messages:
-    st.chat_message(msg["role"]).write(msg["content"])
+    # Use memory if available
+    if st.session_state.memory["hobbies"]:
+        remembered = ", ".join(st.session_state.memory["hobbies"])
+        response = f"You mentioned being into {remembered}. {response}"
 
-user_input = st.chat_input("Ask HobbyHub about hobbies")
-
-if user_input:
-    st.session_state.messages.append(
-        {"role": "user", "content": user_input}
-    )
-
-    reply = mock_llm(user_input, st.session_state.messages)
-
-    st.session_state.messages.append(
-        {"role": "assistant", "content": reply}
-    )
-
-    st.chat_message("assistant").write(reply)
+    # Greeting handling
+    if text.
