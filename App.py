@@ -1,32 +1,43 @@
 import streamlit as st
+from openai import OpenAI
 
-st.set_page_config(page_title="My Chatbot", page_icon="🤖")
+def load_text(filename):
+    with open(filename, "r", encoding="utf-8") as f:
+        return f.read()
 
-st.title("My Chatbot")
+PERSONALITY_TEXT = load_text("personality.txt")
+PROMPTS_TEXT = load_text("prompts.txt")
 
-# Initialize chat history
+client = OpenAI()
+
+st.title("HobbyHub")
+
 if "messages" not in st.session_state:
-    st.session_state.messages = []
+    st.session_state.messages = [
+        {"role": "system", "content": PERSONALITY_TEXT},
+        {"role": "system", "content": PROMPTS_TEXT},
+    ]
 
-# Display chat history
 for msg in st.session_state.messages:
-    st.chat_message(msg["role"]).write(msg["content"])
+    if msg["role"] != "system":
+        st.chat_message(msg["role"]).write(msg["content"])
 
-# User input
 user_input = st.chat_input("Type your message")
 
 if user_input:
-    # Store user message
     st.session_state.messages.append(
         {"role": "user", "content": user_input}
     )
-    st.chat_message("user").write(user_input)
 
-    # Simple bot response (no API)
-    bot_reply = f"You said: {user_input}"
-
-    # Store bot message
-    st.session_state.messages.append(
-        {"role": "assistant", "content": bot_reply}
+    response = client.chat.completions.create(
+        model="gpt-4.1-mini",
+        messages=st.session_state.messages,
     )
-    st.chat_message("assistant").write(bot_reply)
+
+    reply = response.choices[0].message.content
+
+    st.session_state.messages.append(
+        {"role": "assistant", "content": reply}
+    )
+
+    st.chat_message("assistant").write(reply)
