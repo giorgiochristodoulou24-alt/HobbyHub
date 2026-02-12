@@ -77,4 +77,35 @@ def mock_llm(user_input, history):
         response = f"You mentioned being into {remembered}. {response}"
 
     # Greeting handling
-    if text.
+    if text.strip() in ["hi", "hello", "hey"] and len(history) < 2:
+        response = "Hey! What hobbies are you interested in exploring?"
+
+    return response
+
+# -----------------------------
+# STREAMLIT UI
+# -----------------------------
+
+st.set_page_config(page_title="HobbyHub")
+st.title("HobbyHub")
+
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+
+for msg in st.session_state.messages:
+    st.chat_message(msg["role"]).write(msg["content"])
+
+user_input = st.chat_input("Ask HobbyHub about hobbies")
+
+if user_input:
+    st.session_state.messages.append(
+        {"role": "user", "content": user_input}
+    )
+
+    reply = mock_llm(user_input, st.session_state.messages)
+
+    st.session_state.messages.append(
+        {"role": "assistant", "content": reply}
+    )
+
+    st.chat_message("assistant").write(reply)
