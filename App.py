@@ -1,43 +1,32 @@
 import streamlit as st
-from openai import OpenAI
 
-client = OpenAI()
-
-def load_text(path):
-    with open(path, "r", encoding="utf-8") as f:
-        return f.read()
-
-PERSONALITY = load_text("prompts/personality.txt")
-PROMPTS = load_text("prompts/prompts.txt")
-
-if "messages" not in st.session_state:
-    st.session_state.messages = [
-        {"role": "system", "content": PERSONALITY},
-        {"role": "system", "content": PROMPTS},
-    ]
+st.set_page_config(page_title="My Chatbot", page_icon="🤖")
 
 st.title("My Chatbot")
 
-for msg in st.session_state.messages:
-    if msg["role"] != "system":
-        st.chat_message(msg["role"]).write(msg["content"])
+# Initialize chat history
+if "messages" not in st.session_state:
+    st.session_state.messages = []
 
+# Display chat history
+for msg in st.session_state.messages:
+    st.chat_message(msg["role"]).write(msg["content"])
+
+# User input
 user_input = st.chat_input("Type your message")
 
 if user_input:
+    # Store user message
     st.session_state.messages.append(
         {"role": "user", "content": user_input}
     )
+    st.chat_message("user").write(user_input)
 
-    response = client.chat.completions.create(
-        model="gpt-4.1-mini",
-        messages=st.session_state.messages,
-    )
+    # Simple bot response (no API)
+    bot_reply = f"You said: {user_input}"
 
-    reply = response.choices[0].message.content
-
+    # Store bot message
     st.session_state.messages.append(
-        {"role": "assistant", "content": reply}
+        {"role": "assistant", "content": bot_reply}
     )
-
-    st.chat_message("assistant").write(reply)
+    st.chat_message("assistant").write(bot_reply)
