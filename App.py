@@ -1,61 +1,43 @@
 import streamlit as st
+from openai import OpenAI
 
-# Page config
-st.set_page_config(
-    page_title="HobbyHub Chatbot",
-    page_icon="🎨",
-    layout="centered"
-)
+client = OpenAI()
 
-st.title("HobbyHub Chatbot")
-st.write("Ask me anything about hobbies and interests and I'll somehow survive the thrill.")
+def load_text(path):
+    with open(path, "r", encoding="utf-8") as f:
+        return f.read()
 
-# Initialize chat history
+PERSONALITY = load_text("prompts/personality.txt")
+PROMPTS = load_text("prompts/prompts.txt")
+
 if "messages" not in st.session_state:
-    st.session_state.messages = []
+    st.session_state.messages = [
+        {"role": "system", "content": PERSONALITY},
+        {"role": "system", "content": PROMPTS},
+    ]
 
-# Display previous messages
-for message in st.session_state.messages:
-    with st.chat_message(message["role"]):
-        st.markdown(message["content"])
+st.title("My Chatbot")
 
-# User input
-user_input = st.chat_input("Ask me about hobbies...")
+for msg in st.session_state.messages:
+    if msg["role"] != "system":
+        st.chat_message(msg["role"]).write(msg["content"])
 
-def hobby_bot_reply(user_text):
-    text = user_text.lower()
+user_input = st.chat_input("Type your message")
 
-    if "music" in text:
-        return "🎵 Music is awesome! Do you like playing instruments or just listening?"
-    elif "sports" in text:
-        return "🏀 Sports keep you active! Are you more into team sports or solo ones?"
-    elif "art" in text or "drawing" in text:
-        return "🎨 Art is a great creative outlet! Digital or traditional?"
-    elif "gaming" in text:
-        return "🎮 Gaming is fun! Console, PC, or mobile?"
-    elif "reading" in text or "books" in text:
-        return "📚 Reading is a great hobby. Fiction or non-fiction?"
-    else:
-        return "🤔 That sounds interesting! Tell me more about your hobbies."
-
-# When user sends a message
 if user_input:
-    # Save user message
-    st.session_state.messages.append({
-        "role": "user",
-        "content": user_input
-    })
+    st.session_state.messages.append(
+        {"role": "user", "content": user_input}
+    )
 
-    with st.chat_message("user"):
-        st.markdown(user_input)
+    response = client.chat.completions.create(
+        model="gpt-4.1-mini",
+        messages=st.session_state.messages,
+    )
 
-    # Bot response
-    bot_response = hobby_bot_reply(user_input)
+    reply = response.choices[0].message.content
 
-    st.session_state.messages.append({
-        "role": "assistant",
-        "content": bot_response
-    })
+    st.session_state.messages.append(
+        {"role": "assistant", "content": reply}
+    )
 
-    with st.chat_message("assistant"):
-        st.markdown(bot_response)
+    st.chat_message("assistant").write(reply)
