@@ -1,3 +1,44 @@
+st.set_page_config(
+    page_title="HobbyHub",
+    page_icon="logo.png",
+    layout="wide"
+)
+
+st.image("logo.png", width=150)
+
+st.markdown("""
+    <style>
+    body {
+        background-color: #f5f7fa;
+    }
+
+    .main {
+        background-color: #f5f7fa;
+    }
+
+    .stChatMessage {
+        border-radius: 15px;
+        padding: 10px;
+        margin-bottom: 8px;
+    }
+
+    .stChatMessage[data-testid="stChatMessage-user"] {
+        background-color: #d0e8ff;
+    }
+
+    .stChatMessage[data-testid="stChatMessage-assistant"] {
+        background-color: #ffffff;
+        border: 1px solid #e0e0e0;
+    }
+
+    h1 {
+        color: #2c3e50;
+        font-weight: 700;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+
 import streamlit as st
 from openai import OpenAI
 
