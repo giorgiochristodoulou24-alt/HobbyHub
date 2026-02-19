@@ -13,7 +13,7 @@ st.set_page_config(
 )
 
 # -------------------------------------------------
-# CUSTOM CSS
+# CLEAN STREAMLIT UI
 # -------------------------------------------------
 st.markdown("""
     <style>
@@ -24,49 +24,42 @@ st.markdown("""
         .block-container {
             padding-top: 1.5rem;
             padding-bottom: 1rem;
-            max-width: 1000px;
-        }
-
-        .header-container {
-            display: flex;
-            align-items: center;
-            gap: 25px;
-            margin-bottom: 10px;
+            max-width: 1100px;
         }
 
         .title {
-            font-size: 70px;
-            font-weight: 700;
-            margin: 0;
+            font-size: 80px;
+            font-weight: 800;
             line-height: 1;
+            margin-bottom: 10px;
         }
 
         .subtitle {
-            font-size: 28px;
-            font-weight: 500;
-            margin-top: 10px;
-            color: inherit;
+            font-size: 32px;
+            font-weight: 600;
+            margin-top: 0;
         }
     </style>
 """, unsafe_allow_html=True)
 
 # -------------------------------------------------
-# HEADER SECTION
+# HEADER USING COLUMNS (Guaranteed Alignment)
 # -------------------------------------------------
-st.markdown('<div class="header-container">', unsafe_allow_html=True)
 
 logo_path = "Logo.png"
 
-if os.path.exists(logo_path):
-    logo = Image.open(logo_path)
-    st.image(logo, width=105)  # 1.5x visual proportion relative to large title
+col_logo, col_text = st.columns([2, 6], vertical_alignment="center")
 
-st.markdown('<div>', unsafe_allow_html=True)
-st.markdown('<div class="title">HobbyHub</div>', unsafe_allow_html=True)
-st.markdown('<div class="subtitle">Discover hobbies. Explore passions.</div>', unsafe_allow_html=True)
-st.markdown('</div>', unsafe_allow_html=True)
+with col_logo:
+    if os.path.exists(logo_path):
+        logo = Image.open(logo_path)
+        st.image(logo, width=200)  # MUCH larger logo
+    else:
+        st.warning("Logo.png not found.")
 
-st.markdown('</div>', unsafe_allow_html=True)
+with col_text:
+    st.markdown('<div class="title">HobbyHub</div>', unsafe_allow_html=True)
+    st.markdown('<div class="subtitle">Discover hobbies. Explore passions.</div>', unsafe_allow_html=True)
 
 st.divider()
 
