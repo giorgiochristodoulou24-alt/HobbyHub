@@ -7,72 +7,68 @@ import os
 # -------------------------------------------------
 st.set_page_config(
     page_title="HobbyHub",
-    page_icon="🎮",
+    page_icon="🎯",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
 
-# Hide default Streamlit menu + footer
+# -------------------------------------------------
+# CUSTOM CSS (ChatGPT Style Layout)
+# -------------------------------------------------
 st.markdown("""
     <style>
         #MainMenu {visibility: hidden;}
         footer {visibility: hidden;}
         header {visibility: hidden;}
 
-        .main-container {
+        .block-container {
+            padding-top: 2rem;
+            padding-bottom: 1rem;
+            max-width: 900px;
+        }
+
+        .top-bar {
             display: flex;
-            flex-direction: column;
-            justify-content: center;
             align-items: center;
-            height: 75vh;
-            text-align: center;
-        }
-
-        .logo-container {
-            margin-bottom: 25px;
-        }
-
-        .title {
-            font-size: 56px;
-            font-weight: 600;
+            gap: 15px;
             margin-bottom: 10px;
         }
 
+        .title {
+            font-size: 40px;
+            font-weight: 600;
+            margin: 0;
+        }
+
         .subtitle {
-            font-size: 18px;
+            font-size: 16px;
             color: #6e6e6e;
-            margin-bottom: 40px;
+            margin-bottom: 25px;
         }
     </style>
 """, unsafe_allow_html=True)
 
 # -------------------------------------------------
-# MAIN CENTERED CONTAINER
+# HEADER (Logo LEFT of Title)
 # -------------------------------------------------
-st.markdown('<div class="main-container">', unsafe_allow_html=True)
+col1, col2 = st.columns([1, 8])
 
-# Load Logo
-logo_path = "Logo.png"
+with col1:
+    logo_path = "Logo.png"
+    if os.path.exists(logo_path):
+        logo = Image.open(logo_path)
+        st.image(logo, width=80)
 
-if os.path.exists(logo_path):
-    logo = Image.open(logo_path)
-    st.markdown('<div class="logo-container">', unsafe_allow_html=True)
-    st.image(logo, width=350)  # Larger logo
-    st.markdown('</div>', unsafe_allow_html=True)
-else:
-    st.warning("Logo.png not found.")
+with col2:
+    st.markdown('<div class="title">HobbyHub</div>', unsafe_allow_html=True)
 
-# Title + Subtitle
-st.markdown('<div class="title">HobbyHub</div>', unsafe_allow_html=True)
 st.markdown('<div class="subtitle">Discover hobbies. Explore passions.</div>', unsafe_allow_html=True)
 
-st.markdown('</div>', unsafe_allow_html=True)
+st.divider()
 
 # -------------------------------------------------
-# CHAT SECTION (Like ChatGPT)
+# CHAT SYSTEM
 # -------------------------------------------------
-
-# Store chat history
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
@@ -81,16 +77,15 @@ for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-# Chat input at bottom
+# Chat input (stays at bottom automatically)
 prompt = st.chat_input("Ask about hobbies...")
 
 if prompt:
-    # Save user message
     st.session_state.messages.append({"role": "user", "content": prompt})
+
     with st.chat_message("user"):
         st.markdown(prompt)
 
-    # Simple placeholder response
     response = "That sounds interesting! Tell me more about what you enjoy."
     st.session_state.messages.append({"role": "assistant", "content": response})
 
