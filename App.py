@@ -1,87 +1,104 @@
+import streamlit as st
+import os
+from openai import OpenAI
+
+# -------------------------
+# PAGE CONFIG (MUST BE FIRST STREAMLIT COMMAND)
+# -------------------------
 st.set_page_config(
     page_title="HobbyHub",
-    page_icon="logo.png",
+    page_icon="Logo.png",
     layout="wide"
 )
 
-st.image("logo.png", width=150)
+# -------------------------
+# LOAD OPENAI
+# -------------------------
+client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
-st.markdown("""
-    <style>
-    body {
-        background-color: #f5f7fa;
-    }
+# -------------------------
+# LOAD DOCUMENTS FOLDER CONTENT
+# -------------------------
+def load_documents(folder_path="Documents"):
+    content = ""
+    if os.path.exists(folder_path):
+        for file in os.listdir(folder_path):
+            file_path = os.path.join(folder_path, file)
+            if os.path.isfile(file_path):
+                with open(file_path, "r", encoding="utf-8") as f:
+                    content += f.read() + "\n\n"
+    return content
 
-    .main {
-        background-color: #f5f7fa;
-    }
+DOCUMENT_CONTENT = load_documents()
 
-    .stChatMessage {
-        border-radius: 15px;
-        padding: 10px;
-        margin-bottom: 8px;
-    }
+# -------------------------
+# SYSTEM CONTEXT
+# -------------------------
+SYSTEM_CONTEXT = f"""
+You are HobbyHub, a helpful chatbot that only answers questions 
+based on the information provided below.
 
-    .stChatMessage[data-testid="stChatMessage-user"] {
-        background-color: #d0e8ff;
-    }
+If the answer is not found in the information, say:
+"I'm not sure based on the available documents."
 
-    .stChatMessage[data-testid="stChatMessage-assistant"] {
-        background-color: #ffffff;
-        border: 1px solid #e0e0e0;
-    }
+DOCUMENTS:
+{DOCUMENT_CONTENT}
+"""
 
-    h1 {
-        color: #2c3e50;
-        font-weight: 700;
-    }
-    </style>
-""", unsafe_allow_html=True)
+# -------------------------
+# DISPLAY LOGO + TITLE
+# -------------------------
+col1, col2, col3 = st.columns([1, 2, 1])
 
+with col2:
+    st.image("Logo.png", width=150)
+    st.markdown("<h1 style='text-align: center;'>HobbyHub</h1>", unsafe_allow_html=True)
+    st.markdown(
+        "<p style='text-align: center; color: gray;'>Explore hobbies and interests</p>",
+        unsafe_allow_html=True
+    )
 
-import streamlit as st
-from openai import OpenAI
-
-def load_text(filename):
-    with open(filename, "r", encoding="utf-8") as f:
-        return f.read().strip()
-
-PERSONALITY = load_text("personality.txt")
-PROMPTS = load_text("prompts.txt")
-
-SYSTEM_CONTEXT = f"{PERSONALITY}\n\n{PROMPTS}"
-
-client = OpenAI()
-
-st.set_page_config(page_title="HobbyHub")
-st.title("HobbyHub")
-
+# -------------------------
+# SESSION MEMORY
+# -------------------------
 if "messages" not in st.session_state:
     st.session_state.messages = [
         {"role": "system", "content": SYSTEM_CONTEXT}
     ]
 
-# Display conversation (skip system message)
-for msg in st.session_state.messages:
-    if msg["role"] != "system":
-        st.chat_message(msg["role"]).write(msg["content"])
+# -------------------------
+# DISPLAY CHAT HISTORY
+# -------------------------
+for message in st.session_state.messages[1:]:
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
 
-user_input = st.chat_input("Ask HobbyHub about hobbies")
+# -------------------------
+# USER INPUT
+# -------------------------
+user_input = st.chat_input("Ask about hobbies...")
 
 if user_input:
+    # Show user message
+    with st.chat_message("user"):
+        st.markdown(user_input)
+
     st.session_state.messages.append(
         {"role": "user", "content": user_input}
     )
 
-    # Call OpenAI
+    # Get response from OpenAI
     response = client.chat.completions.create(
         model="gpt-4.1-mini",
-        messages=st.session_state.messages,
+        messages=st.session_state.messages
     )
 
-    reply = response.choices[0].message.content
+    assistant_reply = response.choices[0].message.content
+
+    # Show assistant response
+    with st.chat_message("assistant"):
+        st.markdown(assistant_reply)
+
     st.session_state.messages.append(
-        {"role": "assistant", "content": reply}
+        {"role": "assistant", "content": assistant_reply}
     )
-
-    st.chat_message("assistant").write(reply)
