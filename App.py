@@ -13,7 +13,7 @@ st.set_page_config(
 )
 
 # -------------------------------------------------
-# CUSTOM CSS (ChatGPT Style Layout)
+# CUSTOM CSS
 # -------------------------------------------------
 st.markdown("""
     <style>
@@ -22,47 +22,51 @@ st.markdown("""
         header {visibility: hidden;}
 
         .block-container {
-            padding-top: 2rem;
+            padding-top: 1.5rem;
             padding-bottom: 1rem;
-            max-width: 900px;
+            max-width: 1000px;
         }
 
-        .top-bar {
+        .header-container {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 25px;
             margin-bottom: 10px;
         }
 
         .title {
-            font-size: 40px;
-            font-weight: 600;
+            font-size: 70px;
+            font-weight: 700;
             margin: 0;
+            line-height: 1;
         }
 
         .subtitle {
-            font-size: 16px;
-            color: #6e6e6e;
-            margin-bottom: 25px;
+            font-size: 28px;
+            font-weight: 500;
+            margin-top: 10px;
+            color: inherit;
         }
     </style>
 """, unsafe_allow_html=True)
 
 # -------------------------------------------------
-# HEADER (Logo LEFT of Title)
+# HEADER SECTION
 # -------------------------------------------------
-col1, col2 = st.columns([1, 8])
+st.markdown('<div class="header-container">', unsafe_allow_html=True)
 
-with col1:
-    logo_path = "Logo.png"
-    if os.path.exists(logo_path):
-        logo = Image.open(logo_path)
-        st.image(logo, width=80)
+logo_path = "Logo.png"
 
-with col2:
-    st.markdown('<div class="title">HobbyHub</div>', unsafe_allow_html=True)
+if os.path.exists(logo_path):
+    logo = Image.open(logo_path)
+    st.image(logo, width=105)  # 1.5x visual proportion relative to large title
 
+st.markdown('<div>', unsafe_allow_html=True)
+st.markdown('<div class="title">HobbyHub</div>', unsafe_allow_html=True)
 st.markdown('<div class="subtitle">Discover hobbies. Explore passions.</div>', unsafe_allow_html=True)
+st.markdown('</div>', unsafe_allow_html=True)
+
+st.markdown('</div>', unsafe_allow_html=True)
 
 st.divider()
 
@@ -72,12 +76,10 @@ st.divider()
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# Display chat history
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-# Chat input (stays at bottom automatically)
 prompt = st.chat_input("Ask about hobbies...")
 
 if prompt:
