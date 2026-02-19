@@ -1,10 +1,5 @@
 import streamlit as st
-import random
-import re
-
-# -----------------------------
-# LOAD PERSONALITY & PROMPTS
-# -----------------------------
+from openai import OpenAI
 
 def load_text(filename):
     with open(filename, "r", encoding="utf-8") as f:
@@ -15,85 +10,20 @@ PROMPTS = load_text("prompts.txt")
 
 SYSTEM_CONTEXT = f"{PERSONALITY}\n\n{PROMPTS}"
 
-# -----------------------------
-# MEMORY
-# -----------------------------
-
-if "memory" not in st.session_state:
-    st.session_state.memory = {
-        "hobbies": set(),
-        "used_responses": set()
-    }
-
-# -----------------------------
-# MOCK LLM WITH CONTEXT & MEMORY
-# -----------------------------
-
-def mock_llm(user_input, history):
-    text = user_input.lower()
-
-    # Detect hobby mentions
-    hobby_keywords = [
-        "gaming", "drawing", "music", "guitar", "piano",
-        "sports", "soccer", "basketball", "coding",
-        "art", "painting", "photography", "writing"
-    ]
-
-    for hobby in hobby_keywords:
-        if hobby in text:
-            st.session_state.memory["hobbies"].add(hobby)
-
-    # Personality-influenced tone
-    tone_responses = [
-        "That sounds like a great interest.",
-        "That’s a solid hobby choice.",
-        "A lot of people find that really rewarding."
-    ]
-
-    follow_ups = [
-        "What do you enjoy most about it?",
-        "How did you get started?",
-        "Do you want to get better at it or just have fun?",
-        "Do you usually do it alone or with others?",
-        "What part of it do you find most challenging?"
-    ]
-
-    # Avoid repeating responses
-    available = [
-        r for r in follow_ups
-        if r not in st.session_state.memory["used_responses"]
-    ]
-
-    if not available:
-        st.session_state.memory["used_responses"].clear()
-        available = follow_ups
-
-    response = random.choice(available)
-    st.session_state.memory["used_responses"].add(response)
-
-    # Use memory if available
-    if st.session_state.memory["hobbies"]:
-        remembered = ", ".join(st.session_state.memory["hobbies"])
-        response = f"You mentioned being into {remembered}. {response}"
-
-    # Greeting handling
-    if text.strip() in ["hi", "hello", "hey"] and len(history) < 2:
-        response = "Hey! What hobbies are you interested in exploring?"
-
-    return response
-
-# -----------------------------
-# STREAMLIT UI
-# -----------------------------
+client = OpenAI()
 
 st.set_page_config(page_title="HobbyHub")
 st.title("HobbyHub")
 
 if "messages" not in st.session_state:
-    st.session_state.messages = []
+    st.session_state.messages = [
+        {"role": "system", "content": SYSTEM_CONTEXT}
+    ]
 
+# Display conversation (skip system message)
 for msg in st.session_state.messages:
-    st.chat_message(msg["role"]).write(msg["content"])
+    if msg["role"] != "system":
+        st.chat_message(msg["role"]).write(msg["content"])
 
 user_input = st.chat_input("Ask HobbyHub about hobbies")
 
@@ -102,8 +32,13 @@ if user_input:
         {"role": "user", "content": user_input}
     )
 
-    reply = mock_llm(user_input, st.session_state.messages)
+    # Call OpenAI
+    response = client.chat.completions.create(
+        model="gpt-4.1-mini",
+        messages=st.session_state.messages,
+    )
 
+    reply = response.choices[0].message.content
     st.session_state.messages.append(
         {"role": "assistant", "content": reply}
     )
