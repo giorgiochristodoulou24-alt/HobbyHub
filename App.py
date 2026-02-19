@@ -13,7 +13,7 @@ st.set_page_config(
 )
 
 # -------------------------------------------------
-# CLEAN UI + CUSTOM HEADER CONTROL
+# CLEAN UI
 # -------------------------------------------------
 st.markdown("""
     <style>
@@ -23,53 +23,37 @@ st.markdown("""
 
         .block-container {
             padding-top: 1rem;
-            padding-bottom: 1rem;
-            max-width: 1100px;
-        }
-
-        .header-row {
-            display: flex;
-            align-items: flex-start;
-            gap: 30px;
-        }
-
-        .logo-wrapper img {
-            margin-top: -20px;   /* Pull logo upward */
+            max-width: 1300px;
         }
 
         .title {
-            font-size: 85px;
+            font-size: 95px;
             font-weight: 800;
-            line-height: 1;
-            margin-bottom: 5px;
+            line-height: 0.95;
+            margin-bottom: 10px;
         }
 
         .subtitle {
-            font-size: 32px;
+            font-size: 36px;
             font-weight: 600;
             margin-top: 0;
-        }
-
-        .divider-adjust {
-            margin-top: -10px;  /* Pull divider closer */
         }
     </style>
 """, unsafe_allow_html=True)
 
 # -------------------------------------------------
-# HEADER SECTION
+# HEADER LAYOUT (WIDER + BALANCED)
 # -------------------------------------------------
 
 logo_path = "Logo.png"
 
-col_logo, col_text = st.columns([2, 6], vertical_alignment="top")
+# Much more space given to logo column
+col_logo, col_text = st.columns([3, 7], vertical_alignment="center")
 
 with col_logo:
     if os.path.exists(logo_path):
         logo = Image.open(logo_path)
-        st.markdown('<div class="logo-wrapper">', unsafe_allow_html=True)
-        st.image(logo, width=260)  # Larger logo
-        st.markdown('</div>', unsafe_allow_html=True)
+        st.image(logo, width=350)  # SIGNIFICANTLY larger
     else:
         st.warning("Logo.png not found.")
 
@@ -77,9 +61,7 @@ with col_text:
     st.markdown('<div class="title">HobbyHub</div>', unsafe_allow_html=True)
     st.markdown('<div class="subtitle">Discover hobbies. Explore passions.</div>', unsafe_allow_html=True)
 
-st.markdown('<div class="divider-adjust">', unsafe_allow_html=True)
 st.divider()
-st.markdown('</div>', unsafe_allow_html=True)
 
 # -------------------------------------------------
 # CHAT SYSTEM
