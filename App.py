@@ -13,7 +13,7 @@ st.set_page_config(
 )
 
 # -------------------------------------------------
-# CLEAN UI
+# CLEAN STREAMLIT DEFAULT UI
 # -------------------------------------------------
 st.markdown("""
     <style>
@@ -22,15 +22,15 @@ st.markdown("""
         header {visibility: hidden;}
 
         .block-container {
-            padding-top: 1rem;
-            max-width: 1300px;
+            padding-top: 0.5rem;
+            max-width: 1400px;
         }
 
         .title {
             font-size: 95px;
             font-weight: 800;
             line-height: 0.95;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
         }
 
         .subtitle {
@@ -38,22 +38,28 @@ st.markdown("""
             font-weight: 600;
             margin-top: 0;
         }
+
+        /* Pull divider closer upward */
+        .divider-adjust {
+            margin-top: -25px;
+        }
     </style>
 """, unsafe_allow_html=True)
 
 # -------------------------------------------------
-# HEADER LAYOUT (WIDER + BALANCED)
+# HEADER LAYOUT
 # -------------------------------------------------
 
 logo_path = "Logo.png"
 
-# Much more space given to logo column
-col_logo, col_text = st.columns([3, 7], vertical_alignment="center")
+col_logo, col_text = st.columns([4, 6], vertical_alignment="top")
 
 with col_logo:
     if os.path.exists(logo_path):
         logo = Image.open(logo_path)
-        st.image(logo, width=350)  # SIGNIFICANTLY larger
+
+        # Big enough to compensate for transparent padding
+        st.image(logo, width=450)
     else:
         st.warning("Logo.png not found.")
 
@@ -61,7 +67,9 @@ with col_text:
     st.markdown('<div class="title">HobbyHub</div>', unsafe_allow_html=True)
     st.markdown('<div class="subtitle">Discover hobbies. Explore passions.</div>', unsafe_allow_html=True)
 
+st.markdown('<div class="divider-adjust">', unsafe_allow_html=True)
 st.divider()
+st.markdown('</div>', unsafe_allow_html=True)
 
 # -------------------------------------------------
 # CHAT SYSTEM
