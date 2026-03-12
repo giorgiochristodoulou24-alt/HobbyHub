@@ -102,12 +102,12 @@ header {visibility:hidden;}
 
 logo_path = "Logo.png"
 
-col_logo, col_text = st.columns([1,4])
+col_logo, col_text = st.columns([2,5])
 
 with col_logo:
     if os.path.exists(logo_path):
         logo = Image.open(logo_path)
-        st.image(logo, width=120)
+        st.image(logo, width=450)
 
 with col_text:
     st.markdown('<div class="title">HobbyHub</div>', unsafe_allow_html=True)
