@@ -1,10 +1,12 @@
 import streamlit as st
 from PIL import Image
+from openai import OpenAI
 import os
 
 # -------------------------------------------------
 # PAGE CONFIG
 # -------------------------------------------------
+
 st.set_page_config(
     page_title="HobbyHub",
     page_icon="🎯",
@@ -13,8 +15,15 @@ st.set_page_config(
 )
 
 # -------------------------------------------------
+# OPENAI CLIENT
+# -------------------------------------------------
+
+client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
+
+# -------------------------------------------------
 # CSS STYLING
 # -------------------------------------------------
+
 st.markdown("""
 <style>
 
@@ -27,7 +36,6 @@ header {visibility: hidden;}
     max-width: 1400px;
 }
 
-/* Lower title to align with logo */
 .title{
     font-size: 95px;
     font-weight: 800;
@@ -36,14 +44,12 @@ header {visibility: hidden;}
     margin-bottom: 10px;
 }
 
-/* Subtitle follows title */
 .subtitle{
     font-size: 36px;
     font-weight: 600;
     margin-top: 0px;
 }
 
-/* Raise divider */
 .divider-adjust{
     margin-top: -45px;
 }
@@ -52,7 +58,7 @@ header {visibility: hidden;}
 """, unsafe_allow_html=True)
 
 # -------------------------------------------------
-# HEADER LAYOUT
+# HEADER
 # -------------------------------------------------
 
 logo_path = "Logo.png"
@@ -70,33 +76,56 @@ with col_text:
     st.markdown('<div class="title">HobbyHub</div>', unsafe_allow_html=True)
     st.markdown('<div class="subtitle">Discover hobbies. Explore passions.</div>', unsafe_allow_html=True)
 
-# Divider
 st.markdown('<div class="divider-adjust">', unsafe_allow_html=True)
 st.divider()
 st.markdown('</div>', unsafe_allow_html=True)
 
 # -------------------------------------------------
-# CHAT SYSTEM
+# CHAT HISTORY
 # -------------------------------------------------
 
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
+# display previous messages
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
+# -------------------------------------------------
+# CHAT INPUT
+# -------------------------------------------------
+
 prompt = st.chat_input("Ask about hobbies...")
 
 if prompt:
+
+    # show user message
     st.session_state.messages.append({"role": "user", "content": prompt})
 
     with st.chat_message("user"):
         st.markdown(prompt)
 
-    response = "That sounds interesting! Tell me more about what you enjoy."
+    # generate AI response
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {
+                "role": "system",
+                "content": "You are HobbyHub, a friendly assistant that helps users discover hobbies, learn about them, and get started."
+            },
+            {
+                "role": "user",
+                "content": prompt
+            }
+        ]
+    )
 
-    st.session_state.messages.append({"role": "assistant", "content": response})
+    reply = response.choices[0].message.content
 
+    # store assistant response
+    st.session_state.messages.append({"role": "assistant", "content": reply})
+
+    # display response
     with st.chat_message("assistant"):
-        st.markdown(response)
+        st.markdown(reply)
