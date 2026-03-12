@@ -13,37 +13,42 @@ st.set_page_config(
 )
 
 # -------------------------------------------------
-# CLEAN STREAMLIT DEFAULT UI
+# CSS STYLING
 # -------------------------------------------------
 st.markdown("""
-    <style>
-        #MainMenu {visibility: hidden;}
-        footer {visibility: hidden;}
-        header {visibility: hidden;}
+<style>
 
-        .block-container {
-            padding-top: 0.5rem;
-            max-width: 1400px;
-        }
+#MainMenu {visibility: hidden;}
+footer {visibility: hidden;}
+header {visibility: hidden;}
 
-        .title {
-            font-size: 95px;
-            font-weight: 800;
-            line-height: 0.95;
-            margin-bottom: 5px;
-        }
+.block-container{
+    padding-top: 1rem;
+    max-width: 1400px;
+}
 
-        .subtitle {
-            font-size: 36px;
-            font-weight: 600;
-            margin-top: 0;
-        }
+/* Lower title to align with logo */
+.title{
+    font-size: 95px;
+    font-weight: 800;
+    line-height: 1;
+    margin-top: 60px;
+    margin-bottom: 10px;
+}
 
-        /* Pull divider closer upward */
-        .divider-adjust {
-            margin-top: -25px;
-        }
-    </style>
+/* Subtitle follows title */
+.subtitle{
+    font-size: 36px;
+    font-weight: 600;
+    margin-top: 0px;
+}
+
+/* Raise divider */
+.divider-adjust{
+    margin-top: -45px;
+}
+
+</style>
 """, unsafe_allow_html=True)
 
 # -------------------------------------------------
@@ -52,13 +57,11 @@ st.markdown("""
 
 logo_path = "Logo.png"
 
-col_logo, col_text = st.columns([4, 6], vertical_alignment="top")
+col_logo, col_text = st.columns([4,6], vertical_alignment="top")
 
 with col_logo:
     if os.path.exists(logo_path):
         logo = Image.open(logo_path)
-
-        # Big enough to compensate for transparent padding
         st.image(logo, width=450)
     else:
         st.warning("Logo.png not found.")
@@ -67,6 +70,7 @@ with col_text:
     st.markdown('<div class="title">HobbyHub</div>', unsafe_allow_html=True)
     st.markdown('<div class="subtitle">Discover hobbies. Explore passions.</div>', unsafe_allow_html=True)
 
+# Divider
 st.markdown('<div class="divider-adjust">', unsafe_allow_html=True)
 st.divider()
 st.markdown('</div>', unsafe_allow_html=True)
@@ -74,6 +78,7 @@ st.markdown('</div>', unsafe_allow_html=True)
 # -------------------------------------------------
 # CHAT SYSTEM
 # -------------------------------------------------
+
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
@@ -90,6 +95,7 @@ if prompt:
         st.markdown(prompt)
 
     response = "That sounds interesting! Tell me more about what you enjoy."
+
     st.session_state.messages.append({"role": "assistant", "content": response})
 
     with st.chat_message("assistant"):
