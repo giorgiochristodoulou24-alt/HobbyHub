@@ -1,6 +1,5 @@
 import streamlit as st
 from PIL import Image
-from openai import OpenAI
 import os
 
 # -------------------------------------------------
@@ -15,10 +14,20 @@ st.set_page_config(
 )
 
 # -------------------------------------------------
-# OPENAI CLIENT
+# SIDEBAR
 # -------------------------------------------------
 
-client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
+with st.sidebar:
+    st.title("About HobbyHub")
+    st.write(
+        "HobbyHub helps people discover hobbies and learn how to start them."
+    )
+
+    st.write("Built as a school project using Streamlit.")
+
+    if st.button("Clear Chat"):
+        st.session_state.messages = []
+        st.rerun()
 
 # -------------------------------------------------
 # CSS STYLING
@@ -69,8 +78,6 @@ with col_logo:
     if os.path.exists(logo_path):
         logo = Image.open(logo_path)
         st.image(logo, width=450)
-    else:
-        st.warning("Logo.png not found.")
 
 with col_text:
     st.markdown('<div class="title">HobbyHub</div>', unsafe_allow_html=True)
@@ -79,6 +86,64 @@ with col_text:
 st.markdown('<div class="divider-adjust">', unsafe_allow_html=True)
 st.divider()
 st.markdown('</div>', unsafe_allow_html=True)
+
+# -------------------------------------------------
+# SUGGESTED PROMPTS (CHATGPT STYLE)
+# -------------------------------------------------
+
+st.write("### Try asking:")
+
+col1, col2, col3, col4 = st.columns(4)
+
+if col1.button("🎨 Creative hobbies"):
+    prompt = "Suggest creative hobbies"
+
+elif col2.button("🏃 Active hobbies"):
+    prompt = "Suggest active hobbies"
+
+elif col3.button("🎮 Digital hobbies"):
+    prompt = "Suggest digital hobbies"
+
+elif col4.button("🧠 Learning hobbies"):
+    prompt = "Suggest hobbies that teach new skills"
+
+else:
+    prompt = None
+
+# -------------------------------------------------
+# HOBBY KNOWLEDGE BASE
+# -------------------------------------------------
+
+hobby_database = {
+    "creative": [
+        "Painting",
+        "Photography",
+        "Drawing",
+        "Pottery",
+        "Creative writing"
+    ],
+    "active": [
+        "Running",
+        "Cycling",
+        "Rock climbing",
+        "Swimming",
+        "Hiking"
+    ],
+    "digital": [
+        "Game development",
+        "3D modeling",
+        "Video editing",
+        "Graphic design",
+        "Programming"
+    ],
+    "learning": [
+        "Learning guitar",
+        "Language learning",
+        "Reading history",
+        "Chess",
+        "Coding"
+    ]
+}
 
 # -------------------------------------------------
 # CHAT HISTORY
@@ -96,36 +161,57 @@ for message in st.session_state.messages:
 # CHAT INPUT
 # -------------------------------------------------
 
-prompt = st.chat_input("Ask about hobbies...")
+user_input = st.chat_input("Ask about hobbies...")
+
+if user_input:
+    prompt = user_input
+
+# -------------------------------------------------
+# RESPONSE SYSTEM
+# -------------------------------------------------
 
 if prompt:
 
-    # show user message
     st.session_state.messages.append({"role": "user", "content": prompt})
 
     with st.chat_message("user"):
         st.markdown(prompt)
 
-    # generate AI response
-    response = client.chat.completions.create(
-        model="gpt-4o-mini",
-        messages=[
-            {
-                "role": "system",
-                "content": "You are HobbyHub, a friendly assistant that helps users discover hobbies, learn about them, and get started."
-            },
-            {
-                "role": "user",
-                "content": prompt
-            }
-        ]
-    )
+    response = ""
 
-    reply = response.choices[0].message.content
+    lower_prompt = prompt.lower()
 
-    # store assistant response
-    st.session_state.messages.append({"role": "assistant", "content": reply})
+    if "creative" in lower_prompt:
+        response = "Here are some creative hobbies:\n\n" + "\n".join(
+            f"- {h}" for h in hobby_database["creative"]
+        )
 
-    # display response
+    elif "active" in lower_prompt:
+        response = "Here are some active hobbies:\n\n" + "\n".join(
+            f"- {h}" for h in hobby_database["active"]
+        )
+
+    elif "digital" in lower_prompt:
+        response = "Here are some digital hobbies:\n\n" + "\n".join(
+            f"- {h}" for h in hobby_database["digital"]
+        )
+
+    elif "learn" in lower_prompt or "skill" in lower_prompt:
+        response = "Here are hobbies that help you learn new skills:\n\n" + "\n".join(
+            f"- {h}" for h in hobby_database["learning"]
+        )
+
+    else:
+        response = (
+            "Here are some hobbies you might enjoy:\n\n"
+            "- Photography\n"
+            "- Playing guitar\n"
+            "- Hiking\n"
+            "- Painting\n"
+            "- Learning a new language"
+        )
+
+    st.session_state.messages.append({"role": "assistant", "content": response})
+
     with st.chat_message("assistant"):
-        st.markdown(reply)
+        st.markdown(response)
