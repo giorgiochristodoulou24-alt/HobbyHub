@@ -542,16 +542,27 @@ if prompt:
     # -------------------------------
     # Simple matching: extract keywords ignoring extra words
     user_text = prompt.lower()
-    match_found = False
-    for key, response in RESPONSES.items():
-        if re.search(rf"\b{re.escape(key)}\b", user_text):
-            reply = response
+match_found = False
+
+# Split RESPONSES into hobbies and general responses
+hobby_keys = [k for k in RESPONSES.keys() if k.startswith("what is") or k.startswith("learning")]
+general_keys = [k for k in RESPONSES.keys() if k not in hobby_keys]
+
+# Check hobbies first (sorted longest to shortest for specificity)
+for key in sorted(hobby_keys, key=len, reverse=True):
+    if user_text == key or user_text.startswith(key + " "):
+        reply = RESPONSES[key]
+        match_found = True
+        break
+
+# Then check general responses if no hobby matched
+if not match_found:
+    for key in sorted(general_keys, key=len, reverse=True):
+        if user_text == key or user_text.startswith(key + " "):
+            reply = RESPONSES[key]
             match_found = True
             break
-    if not match_found:
-        reply = "Oh no… I have no clue about that. 😩 Try asking about a hobby or greeting me!"
 
-    # Add AI reply to chat
-    st.session_state.messages.append({"role": "assistant", "content": reply})
-    with st.chat_message("assistant"):
-        st.markdown(reply)
+# Fallback if nothing matched
+if not match_found:
+    reply = "Oh no… I have no clue about that. 😩 Try asking about a hobby or greeting me!"
