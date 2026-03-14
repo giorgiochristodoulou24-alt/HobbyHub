@@ -134,7 +134,7 @@ RESPONSES = {
 "you’re weird": "Weird? Thank you. Normal is terribly boring.",
 "you’re smart": "Smart, yes. Modest… not so much.",
 "you’re annoying": "Annoying? Impossible. I prefer the term *energetically charismatic*.",
-"you talk a lot": "Talk a lot? Please, I'm just getting warmed up."
+"you talk a lot": "Talk a lot? Please, I'm just getting warmed up.",
 # -------- Batch 3 --------
 
 "that makes sense now": "Ah! A breakthrough! Knowledge has successfully entered the brain. My work here is clearly historic.",
@@ -186,7 +186,7 @@ RESPONSES = {
 "what are you talking about": "What am I talking about? Only the fascinating subject you asked about!",
 "this is interesting": "Interesting! Excellent. Curiosity keeps conversations alive.",
 "this is weird": "Weird? Oh good. Weird is where the fun happens.",
-"that's surprising": "Surprising indeed! The universe loves plot twists."
+"that's surprising": "Surprising indeed! The universe loves plot twists.",
 # -------- Batch 4 --------
 
 "are you serious": "Am I serious? I am always serious. Dramatically serious.",
@@ -290,7 +290,7 @@ RESPONSES = {
 "explain clearly": "Clarity is my specialty.",
 "give an overview": "Overview prepared.",
 "start from the beginning": "Alright, let's rewind the story.",
-"walk me through it": "Step-by-step guidance engaged."
+"walk me through it": "Step-by-step guidance engaged.",
 # -------- Hobby Batch 1 --------
 
 "what is learning chess as a hobby": "Ah yes, chess — the ancient art of quietly destroying your opponent’s hopes with tiny wooden armies ♟️. Learning chess as a hobby means studying the rules, tactics, and strategies of this classic board game. It challenges your brain, builds concentration, memory, patience, and strategic thinking. Players must plan several moves ahead while predicting what their opponent might do next. Chess can be played alone for practice, with friends, in clubs, online, or even in tournaments. In short: it’s a brain workout disguised as a board game.",
@@ -331,7 +331,7 @@ RESPONSES = {
 
 "what is learning sewing as a hobby": "Sewing is the practical superpower of creating or repairing clothing and fabric items 🧵. It involves stitching fabric using needles, thread, or sewing machines. Hobbyists learn techniques for constructing garments, decorations, and accessories. Sewing improves attention to detail, creativity, and problem-solving skills while producing useful handmade items.",
 
-"what is learning embroidery as a hobby": "Embroidery is basically decorating fabric with tiny works of art 🪡. It involves stitching patterns, images, or text onto fabric using colorful thread. This hobby requires patience, precision, and creativity. It develops fine motor skills and artistic expression while producing beautiful decorative designs."
+"what is learning embroidery as a hobby": "Embroidery is basically decorating fabric with tiny works of art 🪡. It involves stitching patterns, images, or text onto fabric using colorful thread. This hobby requires patience, precision, and creativity. It develops fine motor skills and artistic expression while producing beautiful decorative designs.",
 # -------- Hobby Batch 2 --------
 
 "what is learning guitar as a hobby": "Ah yes, the guitar — the classic instrument that convinces people they’re rock stars after learning three chords 🎸. Learning guitar as a hobby involves practicing chords, scales, rhythm, and melodies to play songs across many genres like rock, pop, blues, and classical. It develops finger coordination, musical listening skills, patience, and creativity. Many hobbyists enjoy playing solo, writing their own songs, or performing casually for friends. Eventually, those three chords may evolve into actual musical wizardry.",
@@ -372,7 +372,7 @@ RESPONSES = {
 
 "what is listening to music as a hobby": "Listening to music — the universal hobby that turns ordinary moments into dramatic movie scenes 🎧. Music lovers explore different genres, artists, and albums while analyzing lyrics, rhythms, and emotions. It’s relaxing, inspiring, and sometimes the perfect soundtrack to daily life.",
 
-"what is reading books as a hobby": "Reading books — the timeless hobby of traveling to new worlds without leaving your chair 📚. Readers explore fiction, nonfiction, fantasy, history, science, and countless other genres. The hobby expands knowledge, imagination, vocabulary, and empathy while offering endless entertainment."
+"what is reading books as a hobby": "Reading books — the timeless hobby of traveling to new worlds without leaving your chair 📚. Readers explore fiction, nonfiction, fantasy, history, science, and countless other genres. The hobby expands knowledge, imagination, vocabulary, and empathy while offering endless entertainment.",
 # -------- Hobby Batch 3 --------
 
 "what is creative writing as a hobby": "Creative writing — the hobby where people stare at a blank page for ten minutes and then suddenly invent an entire universe ✍️. It involves writing stories, poems, scripts, or personal narratives using imagination and storytelling skills. Writers experiment with characters, dialogue, and plot while expressing ideas and emotions. This hobby strengthens creativity, vocabulary, communication skills, and imagination.",
@@ -413,7 +413,7 @@ RESPONSES = {
 
 "what is magic card games as a hobby": "Trading card games — the hobby where people collect cards and then use them in epic strategic duels 🃏. Players build decks with unique abilities and compete using strategy and planning. It develops tactical thinking, collection management, and competitive play.",
 
-"what is speedcubing as a hobby": "Speedcubing — solving a Rubik’s Cube so fast that normal humans suspect witchcraft 🧊. Hobbyists practice algorithms and techniques to solve the cube in seconds. It improves memory, pattern recognition, and finger dexterity."
+"what is speedcubing as a hobby": "Speedcubing — solving a Rubik’s Cube so fast that normal humans suspect witchcraft 🧊. Hobbyists practice algorithms and techniques to solve the cube in seconds. It improves memory, pattern recognition, and finger dexterity.",
 # -------- Hobby Batch 4 --------
 
 "what is 3d printing as a hobby": "3D printing — the hobby where you press a button and slowly watch plastic spaghetti turn into actual objects 🖨️. Hobbyists design or download digital models and use a 3D printer to create physical items layer by layer. People print tools, decorations, prototypes, toys, and creative designs. It combines creativity, engineering, and technology while teaching problem-solving and design skills.",
