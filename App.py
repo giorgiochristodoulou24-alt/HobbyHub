@@ -238,7 +238,7 @@ RESPONSES = {
 "you explain well": "Why thank you. I practice my dramatic teaching daily.",
 "that was interesting to learn": "Learning should always be interesting.",
 "that was fun": "Fun *and* educational? What a powerful combination.",
-"that was cool": "Cool indeed. Knowledge can be stylish."
+"that was cool": "Cool indeed. Knowledge can be stylish.",
 # -------- Batch 5 --------
 
 "let's talk": "Ah yes, conversation! My favorite activity besides sarcasm.",
