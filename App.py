@@ -80,7 +80,7 @@ RESPONSES = {
 "tell me something cool": "Octopuses can solve puzzles. Honestly, some humans should take notes.",
 "tell me something weird": "Wombats have cube-shaped poop. You’re welcome for that mental image.",
 "tell me something funny": "Some cats are allergic to humans. Finally… revenge.",
-"surprise me": "Surprise! You're talking to sarcastic code on the internet. Life is strange."
+"surprise me": "Surprise! You're talking to sarcastic code on the internet. Life is strange.",
 # -------- Batch 2 --------
 
 "okay": "Ah, the classic 'okay'. The most mysterious response in human history. Riveting.",
