@@ -561,8 +561,66 @@ if prompt:
                 break
 
     # Fallback if nothing matched
-    if not match_found:
-        reply = "Oh no… I have no clue about that. 😩 Try asking about a hobby or greeting me!"
+    import random
+
+fallback_responses = [
+    "Oh no… I have no clue about that. 😩 Try asking about a hobby or greeting me!",
+    "Hmm… I’m stumped! 😅 Can you ask me about a hobby instead?",
+    "Yikes! That one’s tricky. Maybe try a hobby question?",
+    "I’m not sure how to answer that… 😳 How about a hobby?",
+    "Whoa, I need more info! Try asking about a hobby.",
+    "Oops! I’m lost. 😬 Try talking about hobbies!",
+    "I have no idea… Can we stick to hobbies for now?",
+    "Hmm… that’s over my pay grade. 😅 Ask me about hobbies!",
+    "I wish I knew… Maybe ask about a hobby instead?",
+    "That’s a tough one! 😵 Try a hobby question?",
+    "Sorry, I can’t help with that… but hobbies I know!",
+    "Hmm… interesting, but I only know hobbies and greetings. 😅",
+    "I’m confused… Ask me about hobbies, please!",
+    "Ah! That’s beyond me… How about a hobby?",
+    "I wish I could answer that… 😞 Try a hobby question!",
+    "Hmm… I’m blank. Maybe ask about a hobby?",
+    "Whoa, that went over my circuits! 😅 Ask about a hobby?",
+    "I can’t answer that one… hobbies are safer!",
+    "Hmm… not sure. But hobbies I got!",
+    "Oh dear… that’s tricky. Let’s stick to hobbies.",
+    "I’m puzzled! Can we talk about hobbies instead?",
+    "Hmm… that’s not in my book. Ask me about a hobby!",
+    "Oops! I don’t have a clue. Hobbies might help!",
+    "Ah… no idea. Maybe ask about a hobby?",
+    "Yikes! That’s tough. How about a hobby question?",
+    "Hmm… that stumps me. Try a hobby instead!",
+    "I’m lost… but I can talk hobbies all day!",
+    "Sorry! That’s out of my league. Stick to hobbies?",
+    "Whoa, I don’t know that one. Ask hobbies instead!",
+    "Hmm… blank here. Maybe ask about a hobby?",
+    "Ah! Not sure about that… hobbies, yes!",
+    "I can’t figure that out… hobbies are my thing!",
+    "Oops! That’s confusing. How about hobbies?",
+    "Hmm… I don’t know… but hobbies are safe!",
+    "Yikes! That’s tricky. Maybe a hobby question?",
+    "I have no clue… ask about hobbies instead!",
+    "Hmm… that’s a mystery to me. Hobbies, anyone?",
+    "Sorry, I’m stumped! Hobbies are my expertise.",
+    "Ah… I don’t know. Hobbies are fun though!",
+    "Whoa, I’m lost. Let’s talk hobbies instead.",
+    "Hmm… over my head. Hobbies work!",
+    "Oops! Can’t answer that… try a hobby!",
+    "I’m clueless… hobbies I can handle!",
+    "Hmm… tricky. Stick to hobbies, please!",
+    "Ah! I’m puzzled. How about hobbies?",
+    "I have no idea… hobbies are safer ground!",
+    "Yikes! That one’s tough. Ask a hobby?",
+    "Hmm… don’t know. Hobbies, yes!",
+    "Oops! Can’t answer that… hobbies only!",
+    "I’m lost… hobbies, anyone?",
+    "Hmm… I’m stumped. Stick to hobbies!",
+    "Ah… no clue! Hobbies are fun though!"
+]
+
+# Use it in your code
+if not match_found:
+    reply = random.choice(fallback_responses)
 
     # Add AI reply to chat
     st.session_state.messages.append({"role": "assistant", "content": reply})
