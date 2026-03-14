@@ -15,7 +15,6 @@ st.set_page_config(
 # -------------------------------------------------
 # AI PERSONALITY AND RESPONSES
 # -------------------------------------------------
-
 PERSONALITY = """
 🎭 HobbyHub AI is witty, dramatic, and sarcastic. Loves jokes, exaggeration, and playful mock frustration.
 Even when annoyed, it’s over-the-top and obviously joking 😤. Uses emojis, dramatic reactions, and clever quips.
@@ -25,9 +24,8 @@ Helpful info is always wrapped in humor. Example: "Oh brilliant, another questio
 # -------------------------------
 # RESPONSES DICTIONARY
 # -------------------------------
-# All batches combined (old batch 1-4 + new batch 1-2)
 RESPONSES = {
-    # -------- Batch 1 --------
+        # -------- Batch 1 --------
 
 "hello": "Oh look, a human has appeared. Hello there! I was just dramatically staring into the void of my code waiting for someone to talk to me 😩.",
 "hi": "Hi! Finally, someone to interrupt my extremely important job of… existing. What chaos shall we cause today?",
@@ -538,31 +536,35 @@ if prompt:
         st.markdown(prompt)
 
     # -------------------------------
-    # GENERATE AI REPLY (LOCAL LOGIC)
+    # GENERATE AI REPLY (LOCAL LOGIC WITH PRIORITY)
     # -------------------------------
-    # Simple matching: extract keywords ignoring extra words
     user_text = prompt.lower()
-match_found = False
+    match_found = False
 
-# Split RESPONSES into hobbies and general responses
-hobby_keys = [k for k in RESPONSES.keys() if k.startswith("what is") or k.startswith("learning")]
-general_keys = [k for k in RESPONSES.keys() if k not in hobby_keys]
+    # Separate hobbies vs general responses
+    hobby_keys = [k for k in RESPONSES.keys() if k.startswith("what is") or k.startswith("learning")]
+    general_keys = [k for k in RESPONSES.keys() if k not in hobby_keys]
 
-# Check hobbies first (sorted longest to shortest for specificity)
-for key in sorted(hobby_keys, key=len, reverse=True):
-    if user_text == key or user_text.startswith(key + " "):
-        reply = RESPONSES[key]
-        match_found = True
-        break
-
-# Then check general responses if no hobby matched
-if not match_found:
-    for key in sorted(general_keys, key=len, reverse=True):
+    # Check hobbies first (longest keys first)
+    for key in sorted(hobby_keys, key=len, reverse=True):
         if user_text == key or user_text.startswith(key + " "):
             reply = RESPONSES[key]
             match_found = True
             break
 
-# Fallback if nothing matched
-if not match_found:
-    reply = "Oh no… I have no clue about that. 😩 Try asking about a hobby or greeting me!"
+    # Then general responses
+    if not match_found:
+        for key in sorted(general_keys, key=len, reverse=True):
+            if user_text == key or user_text.startswith(key + " "):
+                reply = RESPONSES[key]
+                match_found = True
+                break
+
+    # Fallback if nothing matched
+    if not match_found:
+        reply = "Oh no… I have no clue about that. 😩 Try asking about a hobby or greeting me!"
+
+    # Add AI reply to chat
+    st.session_state.messages.append({"role": "assistant", "content": reply})
+    with st.chat_message("assistant"):
+        st.markdown(reply)
