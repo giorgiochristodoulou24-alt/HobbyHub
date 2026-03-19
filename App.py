@@ -529,14 +529,6 @@ for msg in st.session_state.messages:
 # CHAT INPUT
 # -------------------------------------------------
 
-    # Then general responses
-    if not match_found:
-        for key in sorted(general_keys, key=len, reverse=True):
-            if user_text == key or user_text.startswith(key + " "):
-                reply = RESPONSES[key]
-                match_found = True
-                break
-
 prompt = st.chat_input("Message HobbyHub...")
 if prompt:
     # Add user message
