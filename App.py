@@ -563,14 +563,6 @@ if prompt:
             match_found = True
             break
 
-    # THEN general responses
-    if not match_found:
-        for key in sorted(general_keys, key=len, reverse=True):
-            if user_text == key or user_text.startswith(key + " "):
-                reply = RESPONSES[key]
-                match_found = True
-                break
-
     # Fallback responses
     fallback_responses = [
     "Oh no… I have no clue about that. 😩 Try asking about a hobby or greeting me!",
