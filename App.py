@@ -528,29 +528,6 @@ for msg in st.session_state.messages:
 # -------------------------------------------------
 # CHAT INPUT
 # -------------------------------------------------
-prompt = st.chat_input("Message HobbyHub...")
-if prompt:
-    # Add user message
-    st.session_state.messages.append({"role": "user", "content": prompt})
-    with st.chat_message("user"):
-        st.markdown(prompt)
-
-    # -------------------------------
-    # GENERATE AI REPLY (LOCAL LOGIC WITH PRIORITY)
-    # -------------------------------
-    user_text = prompt.lower()
-    match_found = False
-
-    # Separate hobbies vs general responses
-    hobby_keys = [k for k in RESPONSES.keys() if k.startswith("what is") or k.startswith("learning")]
-    general_keys = [k for k in RESPONSES.keys() if k not in hobby_keys]
-
-    # Check hobbies first (longest keys first)
-    for key in sorted(hobby_keys, key=len, reverse=True):
-        if user_text == key or user_text.startswith(key + " "):
-            reply = RESPONSES[key]
-            match_found = True
-            break
 
     # Then general responses
     if not match_found:
