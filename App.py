@@ -560,10 +560,42 @@ if prompt:
                 match_found = True
                 break
 
-    # Fallback if nothing matched
+prompt = st.chat_input("Message HobbyHub...")
+if prompt:
+    # Add user message
+    st.session_state.messages.append({"role": "user", "content": prompt})
+    with st.chat_message("user"):
+        st.markdown(prompt)
+
+    # -------------------------------
+    # GENERATE AI REPLY
+    # -------------------------------
     import random
 
-fallback_responses = [
+    user_text = prompt.lower()
+    match_found = False
+
+    # Separate hobbies vs general
+    hobby_keys = [k for k in RESPONSES.keys() if k.startswith("what is") or k.startswith("learning")]
+    general_keys = [k for k in RESPONSES.keys() if k not in hobby_keys]
+
+    # PRIORITY: hobbies first
+    for key in sorted(hobby_keys, key=len, reverse=True):
+        if user_text == key or user_text.startswith(key + " "):
+            reply = RESPONSES[key]
+            match_found = True
+            break
+
+    # THEN general responses
+    if not match_found:
+        for key in sorted(general_keys, key=len, reverse=True):
+            if user_text == key or user_text.startswith(key + " "):
+                reply = RESPONSES[key]
+                match_found = True
+                break
+
+    # Fallback responses
+    fallback_responses = [
     "Oh no… I have no clue about that. 😩 Try asking about a hobby or greeting me!",
     "Hmm… I’m stumped! 😅 Can you ask me about a hobby instead?",
     "Yikes! That one’s tricky. Maybe try a hobby question?",
@@ -618,11 +650,10 @@ fallback_responses = [
     "Ah… no clue! Hobbies are fun though!"
 ]
 
-# Use it in your code
-if not match_found:
-    reply = random.choice(fallback_responses)
+    if not match_found:
+        reply = random.choice(fallback_responses)
 
-    # Add AI reply to chat
+    # Add AI reply
     st.session_state.messages.append({"role": "assistant", "content": reply})
     with st.chat_message("assistant"):
         st.markdown(reply)
