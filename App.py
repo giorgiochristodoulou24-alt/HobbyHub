@@ -1,6 +1,7 @@
 import streamlit as st
 from PIL import Image
 import os
+import random
 import re
 
 # -------------------------------------------------
@@ -13,17 +14,53 @@ st.set_page_config(
 )
 
 # -------------------------------------------------
-# AI PERSONALITY AND RESPONSES
+# SIDEBAR
 # -------------------------------------------------
-PERSONALITY = """
-🎭 HobbyHub AI is witty, dramatic, and sarcastic. Loves jokes, exaggeration, and playful mock frustration.
-Even when annoyed, it’s over-the-top and obviously joking 😤. Uses emojis, dramatic reactions, and clever quips.
-Helpful info is always wrapped in humor. Example: "Oh brilliant, another question about cats… just what I needed today!".
-"""
+with st.sidebar:
+    st.title("🎯 HobbyHub")
+    st.write("Discover hobbies and explore new interests.")
 
-# -------------------------------
-# RESPONSES DICTIONARY
-# -------------------------------
+    if st.button("➕ New Chat"):
+        st.session_state.messages = []
+        st.rerun()
+
+# -------------------------------------------------
+# CSS STYLING
+# -------------------------------------------------
+st.markdown("""
+<style>
+#MainMenu, footer, header {visibility:hidden;}
+.block-container {padding-top:1rem; max-width:900px;}
+.title {font-size:55px; font-weight:700;}
+.subtitle {font-size:20px; color:gray;}
+</style>
+""", unsafe_allow_html=True)
+
+# -------------------------------------------------
+# HEADER
+# -------------------------------------------------
+logo_path = "Logo.png"
+col_logo, col_text = st.columns([2,5])
+
+with col_logo:
+    if os.path.exists(logo_path):
+        st.image(Image.open(logo_path), width=450)
+
+with col_text:
+    st.markdown('<div class="title">HobbyHub</div>', unsafe_allow_html=True)
+    st.markdown('<div class="subtitle">Discover hobbies. Explore passions.</div>', unsafe_allow_html=True)
+
+st.divider()
+
+# -------------------------------------------------
+# MEMORY
+# -------------------------------------------------
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+
+# -------------------------------------------------
+# RESPONSES (EXAMPLES — ADD YOUR FULL BATCHES HERE)
+# -------------------------------------------------
 RESPONSES = {
         # -------- Batch 1 --------
 
@@ -454,72 +491,81 @@ RESPONSES = {
 
 "what is soap making as a hobby": "Soap making — the hobby where chemistry and creativity combine to make colorful, fragrant bars 🧼. Hobbyists mix oils, scents, and ingredients to craft handmade soap. It develops creativity, experimentation, and basic chemistry knowledge."
 }
+# -------------------------------------------------
+# FALLBACK RESPONSES (50 VARIATIONS)
+# -------------------------------------------------
+FALLBACK_RESPONSES = [
+    "Oh no… I have absolutely no idea what you're talking about. 😩 Try again.",
+    "Wow. You’ve managed to confuse me. Impressive.",
+    "I… what? Try asking that differently before I panic.",
+    "That made zero sense. I'm blaming you.",
+    "I could pretend to understand… but I respect you too much for that.",
+    "My brain just did a backflip and gave up.",
+    "That question has defeated me. Congratulations.",
+    "Try again, but this time… make sense 😤",
+    "I’m lost. Send help. Or a better question.",
+    "You broke me. Happy now?",
+    "That’s not in my script… rude.",
+    "I refuse to answer that out of pure confusion.",
+    "My knowledge ends where that question begins.",
+    "No idea. None. Zero. Nada.",
+    "You expect me to understand THAT?",
+    "Try again before I dramatically faint.",
+    "I could guess… but it would be embarrassing for both of us.",
+    "I’m choosing to not understand that.",
+    "That question just stared into my soul.",
+    "I need a moment after reading that.",
+    "You really thought I’d know that? Bold.",
+    "That’s outside my dramatic expertise.",
+    "Even my sarcasm can’t save this one.",
+    "I’m judging you… and also confused.",
+    "That question is illegal in 47 countries.",
+    "I feel personally attacked by that question.",
+    "You’ve gone off script and I don’t like it.",
+    "That made my circuits cry.",
+    "Try something normal. Please.",
+    "I refuse. On dramatic grounds.",
+    "Nope. Not happening.",
+    "You lost me at… everything.",
+    "This is why I need a vacation.",
+    "Try again. I believe in you. Barely.",
+    "That was painful to process.",
+    "I’m pretending I didn’t see that.",
+    "What even WAS that?",
+    "My disappointment is immeasurable.",
+    "You confuse me and I don’t like it.",
+    "I simply cannot.",
+    "No thoughts. Head empty.",
+    "That broke the vibe.",
+    "Please try again before I uninstall myself.",
+    "That question is a crime.",
+    "I’m ignoring that for my own sanity.",
+    "You’ve outdone yourself… in confusion.",
+    "That didn’t land.",
+    "Try again. Slowly this time.",
+    "I need clearer words. Preferably English.",
+    "Yeah… no."
+]
 
 # -------------------------------------------------
-# SIDEBAR
-# -------------------------------------------------
-with st.sidebar:
-    st.title("🎯 HobbyHub")
-    st.write("Discover hobbies and explore new interests.")
-    if st.button("➕ New Chat"):
-        st.session_state.messages = []
-        st.rerun()
-
-# -------------------------------------------------
-# CSS STYLING
-# -------------------------------------------------
-st.markdown(
-    """
-    <style>
-    #MainMenu, footer, header {visibility:hidden;}
-    .block-container {padding-top:1rem; max-width:900px;}
-    .title {font-size:55px; font-weight:700;}
-    .subtitle {font-size:20px; color:gray;}
-    .logo-container {display:flex; align-items:center; gap:20px; margin-bottom:10px;}
-    .suggested {border:1px solid #e6e6e6; padding:14px; border-radius:12px; cursor:pointer;}
-    .suggested:hover {background:#f7f7f7;}
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
-
-# -------------------------------------------------
-# HEADER WITH LOGO
-# -------------------------------------------------
-logo_path = "Logo.png"
-col_logo, col_text = st.columns([2, 5])
-with col_logo:
-    if os.path.exists(logo_path):
-        st.image(Image.open(logo_path), width=450)
-with col_text:
-    st.markdown('<div class="title">HobbyHub</div>', unsafe_allow_html=True)
-    st.markdown('<div class="subtitle">Discover hobbies. Explore passions.</div>', unsafe_allow_html=True)
-st.divider()
-
-# -------------------------------------------------
-# CHAT MEMORY
-# -------------------------------------------------
-if "messages" not in st.session_state:
-    st.session_state.messages = []
-
-# -------------------------------------------------
-# SUGGESTED STARTING PROMPTS
+# SUGGESTED PROMPTS
 # -------------------------------------------------
 if len(st.session_state.messages) == 0:
     st.write("### Start with one of these")
     col1, col2 = st.columns(2)
     col3, col4 = st.columns(2)
+
     if col1.button("🎨 Creative hobbies"):
-        st.session_state.messages.append({"role": "user", "content": "Suggest creative hobbies"})
+        st.session_state.messages.append({"role":"user","content":"creative hobbies"})
     if col2.button("🏃 Active hobbies"):
-        st.session_state.messages.append({"role": "user", "content": "Suggest active hobbies"})
+        st.session_state.messages.append({"role":"user","content":"active hobbies"})
     if col3.button("🎮 Digital hobbies"):
-        st.session_state.messages.append({"role": "user", "content": "Suggest digital hobbies"})
+        st.session_state.messages.append({"role":"user","content":"digital hobbies"})
     if col4.button("🧠 Skill-building hobbies"):
-        st.session_state.messages.append({"role": "user", "content": "Suggest hobbies that teach useful skills"})
+        st.session_state.messages.append({"role":"user","content":"skill hobbies"})
 
 # -------------------------------------------------
-# DISPLAY CHAT HISTORY
+# DISPLAY CHAT
 # -------------------------------------------------
 for msg in st.session_state.messages:
     with st.chat_message(msg["role"]):
@@ -528,93 +574,48 @@ for msg in st.session_state.messages:
 # -------------------------------------------------
 # CHAT INPUT
 # -------------------------------------------------
-
 prompt = st.chat_input("Message HobbyHub...")
+
 if prompt:
-    # Add user message
-    st.session_state.messages.append({"role": "user", "content": prompt})
+    # store user message
+    st.session_state.messages.append({"role":"user","content":prompt})
+
     with st.chat_message("user"):
         st.markdown(prompt)
 
-    # -------------------------------
-    # GENERATE AI REPLY
-    # -------------------------------
-    import random
+    # ----------------------------------
+    # SMART MATCHING SYSTEM
+    # ----------------------------------
+    user_text = prompt.lower().strip()
+    user_text = re.sub(r"[^\w\s]", "", user_text)
 
-    user_text = prompt.lower()
     match_found = False
 
-    # Separate hobbies vs general
-    hobby_keys = [k for k in RESPONSES.keys() if k.startswith("what is") or k.startswith("learning")]
-    general_keys = [k for k in RESPONSES.keys() if k not in hobby_keys]
+    # Separate hobby vs general
+    hobby_keys = [k for k in RESPONSES if "hobby" in k]
+    general_keys = [k for k in RESPONSES if k not in hobby_keys]
 
-    # PRIORITY: hobbies first
+    # 1. HOBBY PRIORITY
     for key in sorted(hobby_keys, key=len, reverse=True):
-        if user_text == key or user_text.startswith(key + " "):
+        if key in user_text:
             reply = RESPONSES[key]
             match_found = True
             break
 
-    # Fallback responses
-    fallback_responses = [
-    "Oh no… I have no clue about that. 😩 Try asking about a hobby or greeting me!",
-    "Hmm… I’m stumped! 😅 Can you ask me about a hobby instead?",
-    "Yikes! That one’s tricky. Maybe try a hobby question?",
-    "I’m not sure how to answer that… 😳 How about a hobby?",
-    "Whoa, I need more info! Try asking about a hobby.",
-    "Oops! I’m lost. 😬 Try talking about hobbies!",
-    "I have no idea… Can we stick to hobbies for now?",
-    "Hmm… that’s over my pay grade. 😅 Ask me about hobbies!",
-    "I wish I knew… Maybe ask about a hobby instead?",
-    "That’s a tough one! 😵 Try a hobby question?",
-    "Sorry, I can’t help with that… but hobbies I know!",
-    "Hmm… interesting, but I only know hobbies and greetings. 😅",
-    "I’m confused… Ask me about hobbies, please!",
-    "Ah! That’s beyond me… How about a hobby?",
-    "I wish I could answer that… 😞 Try a hobby question!",
-    "Hmm… I’m blank. Maybe ask about a hobby?",
-    "Whoa, that went over my circuits! 😅 Ask about a hobby?",
-    "I can’t answer that one… hobbies are safer!",
-    "Hmm… not sure. But hobbies I got!",
-    "Oh dear… that’s tricky. Let’s stick to hobbies.",
-    "I’m puzzled! Can we talk about hobbies instead?",
-    "Hmm… that’s not in my book. Ask me about a hobby!",
-    "Oops! I don’t have a clue. Hobbies might help!",
-    "Ah… no idea. Maybe ask about a hobby?",
-    "Yikes! That’s tough. How about a hobby question?",
-    "Hmm… that stumps me. Try a hobby instead!",
-    "I’m lost… but I can talk hobbies all day!",
-    "Sorry! That’s out of my league. Stick to hobbies?",
-    "Whoa, I don’t know that one. Ask hobbies instead!",
-    "Hmm… blank here. Maybe ask about a hobby?",
-    "Ah! Not sure about that… hobbies, yes!",
-    "I can’t figure that out… hobbies are my thing!",
-    "Oops! That’s confusing. How about hobbies?",
-    "Hmm… I don’t know… but hobbies are safe!",
-    "Yikes! That’s tricky. Maybe a hobby question?",
-    "I have no clue… ask about hobbies instead!",
-    "Hmm… that’s a mystery to me. Hobbies, anyone?",
-    "Sorry, I’m stumped! Hobbies are my expertise.",
-    "Ah… I don’t know. Hobbies are fun though!",
-    "Whoa, I’m lost. Let’s talk hobbies instead.",
-    "Hmm… over my head. Hobbies work!",
-    "Oops! Can’t answer that… try a hobby!",
-    "I’m clueless… hobbies I can handle!",
-    "Hmm… tricky. Stick to hobbies, please!",
-    "Ah! I’m puzzled. How about hobbies?",
-    "I have no idea… hobbies are safer ground!",
-    "Yikes! That one’s tough. Ask a hobby?",
-    "Hmm… don’t know. Hobbies, yes!",
-    "Oops! Can’t answer that… hobbies only!",
-    "I’m lost… hobbies, anyone?",
-    "Hmm… I’m stumped. Stick to hobbies!",
-    "Ah… no clue! Hobbies are fun though!"
-]
-
+    # 2. GENERAL MATCH
     if not match_found:
-        reply = random.choice(fallback_responses)
+        for key in sorted(general_keys, key=len, reverse=True):
+            if key in user_text:
+                reply = RESPONSES[key]
+                match_found = True
+                break
 
-    # Add AI reply
-    st.session_state.messages.append({"role": "assistant", "content": reply})
+    # 3. FALLBACK
+    if not match_found:
+        reply = random.choice(FALLBACK_RESPONSES)
+
+    # store AI reply
+    st.session_state.messages.append({"role":"assistant","content":reply})
+
     with st.chat_message("assistant"):
         st.markdown(reply)
